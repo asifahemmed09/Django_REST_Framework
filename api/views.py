@@ -1,7 +1,15 @@
-from django.http import JsonResponse
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+from .models import Student
+from .serializers import StudentSerializer
 
 
 # Create your views here.
-def view_student(request):
-    student = {"id":1,"name":"John Doe","Subject":"Math"}
-    return JsonResponse(student)
+@api_view(["GET"])
+def view_students(request):
+    if request.method == "GET":
+        students = Student.objects.all()
+        serializer = StudentSerializer(students, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
